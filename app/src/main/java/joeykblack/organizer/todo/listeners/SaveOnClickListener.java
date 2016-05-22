@@ -12,16 +12,18 @@ import android.widget.EditText;
 import java.util.Date;
 
 import joeykblack.organizer.todo.QueueActivity;
+import joeykblack.organizer.todo.TaskDetailActivity;
 import joeykblack.organizer.todo.database.TaskContract;
 import joeykblack.organizer.todo.R;
 import joeykblack.organizer.todo.database.TaskDbHelper;
+import joeykblack.organizer.todo.model.Task;
 
 public class SaveOnClickListener implements View.OnClickListener {
     private static final String TAG = "SaveClickListener";
-    private final Context myContext;
+    private final TaskDetailActivity myContext;
     private TaskDbHelper mHelper;
 
-    public SaveOnClickListener(Context myContext) {
+    public SaveOnClickListener(TaskDetailActivity myContext) {
         this.myContext = myContext;
         mHelper = new TaskDbHelper(this.myContext);
     }
@@ -31,7 +33,7 @@ public class SaveOnClickListener implements View.OnClickListener {
         View parent = (View) view.getParent();
 
         EditText editTaskTitle = (EditText) parent.findViewById(R.id.edit_task_title);
-        String task = String.valueOf(editTaskTitle.getText());
+        String title = String.valueOf(editTaskTitle.getText());
 
         EditText editTaskPriority = (EditText) parent.findViewById(R.id.edit_task_priority);
         int priority = Integer.valueOf( String.valueOf(editTaskPriority.getText()) );
@@ -40,18 +42,30 @@ public class SaveOnClickListener implements View.OnClickListener {
         String dateString = String.valueOf(editTaskDate.getText());
         dateString = TaskDbHelper.isDate(dateString) ? dateString : null;
 
-        Log.d(TAG, "Insert into db: " + task + " priority[" + priority + "] date[" + dateString + "]");
+        Task task = myContext.getTask();
 
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(TaskContract.TaskEntry.COL_TASK_TITLE, task);
+        values.put(TaskContract.TaskEntry.COL_TASK_TITLE, title);
         values.put(TaskContract.TaskEntry.COL_TASK_PRIORITY, priority);
         values.put(TaskContract.TaskEntry.COL_TASK_DATE, dateString);
-        db.insertWithOnConflict(TaskContract.TaskEntry.TABLE,
-                null,
-                values,
-                SQLiteDatabase.CONFLICT_REPLACE);
+
+        if ( task == null ) {
+            Log.d(TAG, "Insert into db: " + title + " priority[" + priority + "] date[" + dateString + "]");
+            db.insertWithOnConflict(TaskContract.TaskEntry.TABLE,
+                    null,
+                    values,
+                    SQLiteDatabase.CONFLICT_REPLACE);
+        }
+        else {
+            db.update(TaskContract.TaskEntry.TABLE,
+                    values,
+                    TaskContract.TaskEntry._ID + " = ?",
+                    new String[]{ String.valueOf( task.getId() ) });
+        }
+
         db.close();
+
         Intent gotoTaskDetail = new Intent(myContext, QueueActivity.class);
         myContext.startActivity(gotoTaskDetail);
     }

@@ -44,6 +44,13 @@ public class TaskDbHelper extends SQLiteOpenHelper {
         }
         return date;
     }
+    public static String serializeDate(Date date) {
+        String dateString = "";
+        if ( date != null ) {
+            dateString = TaskContract.DATE_FORMAT.format( date );
+        }
+        return dateString;
+    }
     public static boolean isDate(String dateString) {
         return Pattern.matches(TaskContract.DATE_PATTERN, dateString);
     }

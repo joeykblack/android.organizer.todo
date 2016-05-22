@@ -1,5 +1,6 @@
 package joeykblack.organizer.todo.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import joeykblack.organizer.todo.util.RankCalculator;
@@ -7,7 +8,9 @@ import joeykblack.organizer.todo.util.RankCalculator;
 /**
  * Created by joey on 5/21/2016.
  */
-public class Task implements Comparable<Task> {
+public class Task implements Comparable<Task>, Serializable {
+
+    public static final String TAG = "Task";
 
     private long id;
     private String title;
