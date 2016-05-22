@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Todo</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_task_detail">Task Details</string>
+
+    <string name="label_task_title">Task</string>
+    <string name="label_task_priority">Priority</string>
+    <string name="pick_date">Select Due Date</string>
+</resources>
