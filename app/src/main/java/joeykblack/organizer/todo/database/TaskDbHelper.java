@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 public class TaskDbHelper extends SQLiteOpenHelper {
 
@@ -20,7 +21,7 @@ public class TaskDbHelper extends SQLiteOpenHelper {
         String createTable = "CREATE TABLE " + TaskContract.TaskEntry.TABLE + " ( " +
                 TaskContract.TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TaskContract.TaskEntry.COL_TASK_TITLE + " TEXT NOT NULL, " +
-                TaskContract.TaskEntry.COL_TASK_PRIORITY + " INTEGER" +
+                TaskContract.TaskEntry.COL_TASK_PRIORITY + " INTEGER, " +
                 TaskContract.TaskEntry.COL_TASK_DATE + " TEXT" + ");";
 
         db.execSQL(createTable);
@@ -30,5 +31,20 @@ public class TaskDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TaskContract.TaskEntry.TABLE);
         onCreate(db);
+    }
+
+    public static Date parseDate(String dateString) {
+        Date date = null;
+        try {
+            if ( dateString != null && dateString.trim().equals("")==false ) {
+                date = TaskContract.DATE_FORMAT.parse(dateString);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+    public static boolean isDate(String dateString) {
+        return Pattern.matches(TaskContract.DATE_PATTERN, dateString);
     }
 }

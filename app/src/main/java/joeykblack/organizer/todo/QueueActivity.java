@@ -16,16 +16,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import joeykblack.organizer.todo.database.TaskContract;
 import joeykblack.organizer.todo.database.TaskDbHelper;
+import joeykblack.organizer.todo.model.Task;
 
 public class QueueActivity extends AppCompatActivity {
 
     private static final String TAG = "QueueActivity";
     private TaskDbHelper mHelper;
     private ListView mTaskListView;
-    private ArrayAdapter<String> mAdapter;
+    private ArrayAdapter<Task> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,18 +55,22 @@ public class QueueActivity extends AppCompatActivity {
     }
 
     public void updateUI() {
-        ArrayList<String> taskList = new ArrayList<>();
+        ArrayList<Task> taskList = new ArrayList<>();
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor cursor = db.query( TaskContract.TaskEntry.TABLE,
-                new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE},
-                null, null, null, null, TaskContract.TaskEntry.COL_TASK_PRIORITY + " DESC");
+                new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE, TaskContract.TaskEntry.COL_TASK_PRIORITY, TaskContract.TaskEntry.COL_TASK_DATE},
+                null, null, null, null, null);
         while (cursor.moveToNext()) {
-            int idx = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
-            taskList.add(cursor.getString(idx));
+            taskList.add( new Task()
+                    .setTitle( getValue(cursor, TaskContract.TaskEntry.COL_TASK_TITLE) )
+                    .setPriority( Integer.parseInt( getValue(cursor, TaskContract.TaskEntry.COL_TASK_PRIORITY) ) )
+                    .setDate( TaskDbHelper.parseDate( getValue(cursor, TaskContract.TaskEntry.COL_TASK_DATE) ) )
+            );
         }
+        Collections.sort( taskList );
 
         if (mAdapter == null) {
-            mAdapter = new ArrayAdapter<String>(this,
+            mAdapter = new ArrayAdapter<Task>(this,
                     R.layout.item_queue,
                     R.id.task_title,
                     taskList);
@@ -74,6 +80,12 @@ public class QueueActivity extends AppCompatActivity {
             mAdapter.addAll(taskList);
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    private String getValue(Cursor cursor, String key) {
+        int idx = cursor.getColumnIndex(key);
+        String value = cursor.getString(idx);
+        return value;
     }
 
     public void deleteTask(View view) {
