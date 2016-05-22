@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ public class QueueActivity extends AppCompatActivity {
                 null, null, null, null, null);
         while (cursor.moveToNext()) {
             taskList.add( new Task()
+                    .setId( Long.parseLong( getValue(cursor, TaskContract.TaskEntry._ID) ) )
                     .setTitle( getValue(cursor, TaskContract.TaskEntry.COL_TASK_TITLE) )
                     .setPriority( Integer.parseInt( getValue(cursor, TaskContract.TaskEntry.COL_TASK_PRIORITY) ) )
                     .setDate( TaskDbHelper.parseDate( getValue(cursor, TaskContract.TaskEntry.COL_TASK_DATE) ) )
@@ -90,12 +92,15 @@ public class QueueActivity extends AppCompatActivity {
 
     public void deleteTask(View view) {
         View parent = (View) view.getParent();
-        TextView textView = (TextView) parent.findViewById(R.id.task_title);
-        String title = String.valueOf( textView.getText() );
+
+        AdapterView<?> adapterView = (AdapterView<?>) parent.getParent();
+        int position = adapterView.getPositionForView(parent);
+        Task task = (Task) adapterView.getAdapter().getItem(position);
+
         SQLiteDatabase db = mHelper.getWritableDatabase();
         db.delete(TaskContract.TaskEntry.TABLE,
-                TaskContract.TaskEntry.COL_TASK_TITLE + " = ?",
-                new String[]{title});
+                TaskContract.TaskEntry._ID + " = ?",
+                new String[]{String.valueOf(task.getId())});
         db.close();
         updateUI();
     }

@@ -9,11 +9,21 @@ import joeykblack.organizer.todo.util.RankCalculator;
  */
 public class Task implements Comparable<Task> {
 
+    private long id;
     private String title;
     private int priority;
     private Date date;
 
     private int rank = -1;
+
+    public long getId() {
+        return id;
+    }
+
+    public Task setId(long id) {
+        this.id = id;
+        return this;
+    }
 
     public String getTitle() {
         return title;
