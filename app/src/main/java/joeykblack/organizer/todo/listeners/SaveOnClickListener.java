@@ -58,6 +58,7 @@ public class SaveOnClickListener implements View.OnClickListener {
                     SQLiteDatabase.CONFLICT_REPLACE);
         }
         else {
+            Log.d(TAG, "Updating into db: " + title + " priority[" + priority + "] date[" + dateString + "]");
             db.update(TaskContract.TaskEntry.TABLE,
                     values,
                     TaskContract.TaskEntry._ID + " = ?",

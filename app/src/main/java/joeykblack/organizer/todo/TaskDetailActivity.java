@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +45,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             if ( task.getDate() != null ) {
                 editTaskDate.setText( TaskDbHelper.serializeDate( task.getDate() ) );
             }
+            Log.d(TAG, "Loading: " + task.getTitle() + " priority[" + task.getPriority() + "] date[" + task.getDate() + "]");
         }
     }
 

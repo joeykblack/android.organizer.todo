@@ -29,7 +29,7 @@ public class DatePickerFragment extends DialogFragment
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         Button datePicker = (Button) getActivity().findViewById(R.id.edit_task_date);
-        datePicker.setText(year+"-"+month+"-"+day);
+        datePicker.setText(year+"-"+String.format("%02d", month)+"-"+String.format("%02d", day));
     }
 
 }
