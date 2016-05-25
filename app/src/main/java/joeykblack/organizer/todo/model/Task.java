@@ -17,7 +17,8 @@ public class Task implements Comparable<Task>, Serializable {
     private int priority;
     private Date date;
 
-    private int rank = -1;
+    private static final long NO_RANK = -1l;
+    private long rank = NO_RANK;
 
     public long getId() {
         return id;
@@ -63,12 +64,12 @@ public class Task implements Comparable<Task>, Serializable {
     @Override
     public int compareTo(Task another) {
         int order = 0;
-        int rank1 = rank != -1 ? rank : RankCalculator.getRank(this);
-        int rank2 = another.rank != -1 ? another.rank : RankCalculator.getRank(another);
-        if ( rank1 < rank2 ) {
+        long rank1 = rank != NO_RANK ? rank : RankCalculator.getRank(this);
+        long rank2 = another.rank != NO_RANK ? another.rank : RankCalculator.getRank(another);
+        if ( rank1 > rank2 ) {
             order = -1;
         }
-        else if ( rank1 > rank2 ) {
+        else if ( rank1 < rank2 ) {
             order = 1;
         }
         return order;
