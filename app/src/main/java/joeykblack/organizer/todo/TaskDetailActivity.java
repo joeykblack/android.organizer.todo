@@ -51,7 +51,7 @@ public class TaskDetailActivity extends AppCompatActivity {
 
 
     public void showDatePickerDialog(View v) {
-        DialogFragment datePicker = new DatePickerFragment().setDate(task.getDate());
+        DialogFragment datePicker = new DatePickerFragment().setDate(task == null ? null : task.getDate());
         datePicker.show(getFragmentManager(), "datePicker");
     }
 

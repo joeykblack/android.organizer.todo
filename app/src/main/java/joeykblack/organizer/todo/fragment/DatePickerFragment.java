@@ -9,6 +9,7 @@ import android.widget.DatePicker;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import joeykblack.organizer.todo.R;
 
@@ -28,6 +29,7 @@ public class DatePickerFragment extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Calendar c = Calendar.getInstance();
         if ( date != null ) {
+            c = new GregorianCalendar();
             c.setTime(date);
         }
 
