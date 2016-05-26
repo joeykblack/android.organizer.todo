@@ -1,8 +1,9 @@
 package joeykblack.organizer.todo.util;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.util.Date;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import joeykblack.organizer.todo.model.Task;
@@ -31,11 +32,20 @@ public class RankCalculator {
     private static long getDaysTillDue(Task task) {
         long days = 0;
         if ( task.getDate() != null ) {
-            Date now = new Date(); // TODO: get date without time
-            long diff = task.getDate().getTime() - now.getTime();
+            long diff = task.getDate().getTime() - getToday().getTimeInMillis();
             days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
         }
         return days;
+    }
+
+    @NonNull
+    private static Calendar getToday() {
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+        today.set(Calendar.MILLISECOND, 0);
+        return today;
     }
 
 }

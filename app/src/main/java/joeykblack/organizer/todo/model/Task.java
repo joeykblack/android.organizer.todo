@@ -56,6 +56,11 @@ public class Task implements Comparable<Task>, Serializable {
         return this;
     }
 
+    public long getRank() {
+        rank = rank != NO_RANK ? rank : RankCalculator.getRank(this);
+        return rank;
+    }
+
     @Override
     public String toString() {
         return title;
@@ -64,8 +69,8 @@ public class Task implements Comparable<Task>, Serializable {
     @Override
     public int compareTo(Task another) {
         int order = 0;
-        long rank1 = rank != NO_RANK ? rank : RankCalculator.getRank(this);
-        long rank2 = another.rank != NO_RANK ? another.rank : RankCalculator.getRank(another);
+        long rank1 = this.getRank();
+        long rank2 = another.getRank();
         if ( rank1 > rank2 ) {
             order = -1;
         }
