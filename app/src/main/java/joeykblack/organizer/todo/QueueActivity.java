@@ -24,6 +24,7 @@ import java.util.List;
 import joeykblack.organizer.todo.database.TaskContract;
 import joeykblack.organizer.todo.database.TaskDbHelper;
 import joeykblack.organizer.todo.model.Task;
+import joeykblack.organizer.todo.util.ClusterUtil;
 
 public class QueueActivity extends AppCompatActivity {
     private static final String TAG = QueueActivity.class.getSimpleName();
@@ -31,12 +32,10 @@ public class QueueActivity extends AppCompatActivity {
     private TaskDbHelper mHelper;
     private ListView mTaskListView;
     private ArrayAdapter<Task> mAdapter;
-    private List<Task> taskList;
 
 
-    private static final int UNSET = -2;
     private static final int SHOW_ALL = -1;
-    private int showCount = UNSET;
+    private int showGroupCount = 1;
 
 
     @Override
@@ -93,7 +92,7 @@ public class QueueActivity extends AppCompatActivity {
 
     @NonNull
     private List<Task> getTasks() {
-        taskList = new ArrayList<>();
+        List<Task> taskList = new ArrayList<>();
 
         // Get Tasks from DB
         SQLiteDatabase db = mHelper.getReadableDatabase();
@@ -121,10 +120,9 @@ public class QueueActivity extends AppCompatActivity {
     }
 
     private List<Task> adjustListLength(List<Task> list) {
-        if ( showCount == UNSET ) {
-            showCount = 1;
+        if ( showGroupCount != SHOW_ALL ) {
+            list  = ClusterUtil.getGroups(list, showGroupCount);
         }
-        list  = list.subList(0, showCount);
         return list;
     }
 
@@ -167,15 +165,15 @@ public class QueueActivity extends AppCompatActivity {
 
     // onClick of Show All button
     public void showAll(View view) {
-        showCount = taskList.size();
-        Log.d(TAG, "showAll: " + showCount);
+        showGroupCount = SHOW_ALL;
+        Log.d(TAG, "showAll: " + showGroupCount);
         updateUI();
     }
 
     // onClick of Show More button
     public void showMore(View view) {
-        showCount = showCount<taskList.size() ? showCount+1 : showCount;
-        Log.d(TAG, "showMore: " + showCount);
+        showGroupCount++;
+        Log.d(TAG, "showMore: " + showGroupCount);
         updateUI();
     }
 
