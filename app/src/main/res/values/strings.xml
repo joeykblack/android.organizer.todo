@@ -6,4 +6,7 @@
     <string name="label_task_title">Task</string>
     <string name="label_task_priority">Priority</string>
     <string name="pick_date">Select Due Date</string>
+
+    <string name="show_all">Show All</string>
+    <string name="show_more">Show More</string>
 </resources>

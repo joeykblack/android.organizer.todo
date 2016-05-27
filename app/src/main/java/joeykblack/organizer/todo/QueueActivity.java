@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import joeykblack.organizer.todo.database.TaskContract;
 import joeykblack.organizer.todo.database.TaskDbHelper;
@@ -29,6 +31,12 @@ public class QueueActivity extends AppCompatActivity {
     private TaskDbHelper mHelper;
     private ListView mTaskListView;
     private ArrayAdapter<Task> mAdapter;
+    private List<Task> taskList;
+
+
+    private static final int UNSET = -2;
+    private static final int SHOW_ALL = -1;
+    private int showCount = UNSET;
 
 
     @Override
@@ -68,8 +76,24 @@ public class QueueActivity extends AppCompatActivity {
         });
     }
 
+
+
+    /**
+     * Update UI
+     */
     public void updateUI() {
-        ArrayList<Task> taskList = new ArrayList<>();
+        List<Task> taskList = getTasks();
+
+        Collections.sort(taskList);
+
+        taskList = adjustListLength(taskList);
+
+        updateAdapter(taskList);
+    }
+
+    @NonNull
+    private List<Task> getTasks() {
+        taskList = new ArrayList<>();
 
         // Get Tasks from DB
         SQLiteDatabase db = mHelper.getReadableDatabase();
@@ -86,10 +110,25 @@ public class QueueActivity extends AppCompatActivity {
                     .setDate(TaskDbHelper.parseDate(getValue(cursor, TaskContract.TaskEntry.COL_TASK_DATE)))
             );
         }
+        return taskList;
+    }
 
-        // Sort
-        Collections.sort(taskList);
+    // Get value for key from cursor
+    private String getValue(Cursor cursor, String key) {
+        int idx = cursor.getColumnIndex(key);
+        String value = cursor.getString(idx);
+        return value;
+    }
 
+    private List<Task> adjustListLength(List<Task> list) {
+        if ( showCount == UNSET ) {
+            showCount = 1;
+        }
+        list  = list.subList(0, showCount);
+        return list;
+    }
+
+    private void updateAdapter(List<Task> taskList) {
         // Update Adapter
         if (mAdapter == null) {
             mAdapter = new ArrayAdapter<Task>(this,
@@ -104,12 +143,11 @@ public class QueueActivity extends AppCompatActivity {
         }
     }
 
-    // Get value for key from cursor
-    private String getValue(Cursor cursor, String key) {
-        int idx = cursor.getColumnIndex(key);
-        String value = cursor.getString(idx);
-        return value;
-    }
+
+
+    /*
+     * Button methods
+     */
 
     // onClick of Done button
     public void deleteTask(View view) {
@@ -126,6 +164,28 @@ public class QueueActivity extends AppCompatActivity {
         db.close();
         updateUI();
     }
+
+    // onClick of Show All button
+    public void showAll(View view) {
+        showCount = taskList.size();
+        Log.d(TAG, "showAll: " + showCount);
+        updateUI();
+    }
+
+    // onClick of Show More button
+    public void showMore(View view) {
+        showCount = showCount<taskList.size() ? showCount+1 : showCount;
+        Log.d(TAG, "showMore: " + showCount);
+        updateUI();
+    }
+
+
+
+
+    /*
+     * Other mehtods
+     */
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
