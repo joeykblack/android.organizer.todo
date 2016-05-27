@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 
+import joeykblack.organizer.todo.database.TaskContract;
 import joeykblack.organizer.todo.database.TaskDbHelper;
 import joeykblack.organizer.todo.fragment.DatePickerFragment;
 import joeykblack.organizer.todo.listeners.SaveOnClickListener;
@@ -33,8 +34,7 @@ public class TaskDetailActivity extends AppCompatActivity {
 
         // Setup Priority NumberPicker
         NumberPicker numberPicker = (NumberPicker) findViewById(R.id.edit_task_priority);
-        numberPicker.setMinValue(0);
-        numberPicker.setMaxValue(10);
+        setRange(numberPicker);
         numberPicker.setWrapSelectorWheel(false);
 
         // Save button
@@ -53,7 +53,7 @@ public class TaskDetailActivity extends AppCompatActivity {
 
             // Priority
             NumberPicker editTaskPriority = (NumberPicker) this.findViewById(R.id.edit_task_priority);
-            editTaskPriority.setValue( task.getPriority() );
+            editTaskPriority.setValue( ( task.getPriority() - TaskContract.PRIORITY_MIN ) / TaskContract.PRIORITY_STEP );
 
             // Date
             Button editTaskDate = (Button) this.findViewById(R.id.edit_task_date);
@@ -63,6 +63,24 @@ public class TaskDetailActivity extends AppCompatActivity {
 
             Log.d(TAG, "Loading: " + task.getTitle() + " priority[" + task.getPriority() + "] date[" + task.getDate() + "]");
         }
+    }
+
+    private void setRange(NumberPicker numberPicker) {
+
+        numberPicker.setMinValue( 0 );
+
+        int max = (TaskContract.PRIORITY_MAX - TaskContract.PRIORITY_MIN) / TaskContract.PRIORITY_STEP;
+        numberPicker.setMaxValue( max );
+
+        String[] displayValues = new String[max + 1];
+        for (int i = 0; i <= max; i++) {
+            displayValues[i] = String.valueOf( ( i * TaskContract.PRIORITY_STEP ) + TaskContract.PRIORITY_MIN );
+        }
+
+        numberPicker.setDisplayedValues(displayValues);
+
+        numberPicker.setValue( (int) Math.ceil( max / 2 ) );
+
     }
 
 

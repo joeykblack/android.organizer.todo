@@ -17,7 +17,7 @@ import joeykblack.organizer.todo.database.TaskDbHelper;
 import joeykblack.organizer.todo.model.Task;
 
 public class SaveOnClickListener implements View.OnClickListener {
-    private static final String TAG = "SaveClickListener";
+    private static final String TAG = SaveOnClickListener.class.getSimpleName();
     private final TaskDetailActivity myContext;
     private TaskDbHelper mHelper;
 
@@ -36,7 +36,7 @@ public class SaveOnClickListener implements View.OnClickListener {
 
         // Get priority
         NumberPicker editTaskPriority = (NumberPicker) parent.findViewById(R.id.edit_task_priority);
-        int priority = editTaskPriority.getValue();
+        int priority = ( editTaskPriority.getValue() * TaskContract.PRIORITY_STEP ) + TaskContract.PRIORITY_MIN;
 
         // Get date
         Button editTaskDate = (Button) parent.findViewById(R.id.edit_task_date);

@@ -1,5 +1,6 @@
 package joeykblack.organizer.todo.util;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -37,47 +38,69 @@ public class ClusterUtil {
      *  group i = values.subList( groups[i-1], groups[i] )
      */
     private static List<Integer> getGroupsUsingKDE(long[] values) {
-        double mean = getMean(values);
-        Log.d(TAG, "mean: " + mean);
+        List<Integer> groups = new ArrayList<>();
 
-        double variance = getVariance(values, mean);
-        Log.d(TAG, "variance: " + variance);
+        if ( values.length > 0 ) {
+            double mean = getMean(values);
+            Log.d(TAG, "mean: " + mean);
 
-        long min = getMin(values);
-        Log.d(TAG, "min: " + min);
+            double variance = getVariance(values, mean);
+            Log.d(TAG, "variance: " + variance);
 
-        long max = getMax(values);
-        Log.d(TAG, "max: " + max);
+            long min = getMin(values);
+            Log.d(TAG, "min: " + min);
 
-        // Calculate prob across value range in descending order
+            long max = getMax(values);
+            Log.d(TAG, "max: " + max);
+
+            // Calculate prob across value range in descending order
+            List<Double> probabilities = getProbabilities(values, mean, variance, min, max);
+
+            // Find the offset from max of each min
+            List<Integer> minimaOffset = findMinimaOffset(probabilities);
+
+            // Calculate minima
+            List<Long> minima = getMinima(max, minimaOffset);
+
+            addGroups(values, groups, minima);
+        }
+
+        groups.add( values.length ); // last group ends at end of list
+        return groups;
+    }
+
+    @NonNull
+    // Calculate prob across value range in descending order
+    private static List<Double> getProbabilities(long[] values, double mean, double variance, long min, long max) {
         List<Double> probabilities = new ArrayList<>();
         for (long x = max; x >= min; x--) {
-            double probability = kde( x, values, mean, variance );
+            double probability = kde(x, values, mean, variance);
             Log.d(TAG, "kde( rank:" + x + " ) = " + probability);
             probabilities.add(probability);
         }
+        return probabilities;
+    }
 
-        // Find the offset from max of each min
-        List<Integer> minimaOffset = findMinimaOffset(probabilities);
-
-        // Calculate minima
+    @NonNull
+    // Calculate minima
+    private static List<Long> getMinima(long max, List<Integer> minimaOffset) {
         List<Long> minima = new ArrayList<>();
         for (Integer offset : minimaOffset) {
             minima.add(max - offset); // max - offset from max
         }
+        return minima;
+    }
 
-        List<Integer> groups = new ArrayList<>();
+    private static void addGroups(long[] values, List<Integer> groups, List<Long> minima) {
         int minimaIndex = 0;
         for (int i = 0; i < values.length && minimaIndex < minima.size(); i++) {
             // If we passed a min (descending order)
-            if ( values[i] < minima.get(minimaIndex) ) {
+            if (values[i] < minima.get(minimaIndex)) {
                 // Mark the end of a group with the 1st index of the next group
-                groups.add( i );
+                groups.add(i);
                 minimaIndex++;
             }
         }
-        groups.add( values.length ); // last group ends at end of list
-        return groups;
     }
 
     /**
