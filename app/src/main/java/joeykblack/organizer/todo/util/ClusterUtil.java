@@ -33,7 +33,7 @@ public class ClusterUtil {
     /**
      * Kernel density estimation
      * @param values
-     * @return groups[groupNumber] = end of group index + 1
+     * @return groups[groupNumber] = start of group groupNumber + 1
      *  group i = values.subList( groups[i-1], groups[i] )
      */
     private static List<Integer> getGroupsUsingKDE(long[] values) {
@@ -49,16 +49,46 @@ public class ClusterUtil {
         long max = getMax(values);
         Log.d(TAG, "max: " + max);
 
-        for (long x = min; x <= max; x++) {
+        // Calculate prob across value range in descending order
+        List<Double> probabilities = new ArrayList<>();
+        for (long x = max; x >= min; x--) {
             double probability = kde( x, values, mean, variance );
             Log.d(TAG, "kde( rank:" + x + " ) = " + probability);
+            probabilities.add(probability);
+        }
+
+        // Find the offset from max of each min
+        List<Integer> minimaOffset = findMinimaOffset(probabilities);
+
+        // Calculate minima
+        List<Long> minima = new ArrayList<>();
+        for (Integer offset : minimaOffset) {
+            minima.add(max - offset); // max - offset from max
         }
 
         List<Integer> groups = new ArrayList<>();
-        groups.add(values.length);
+        int minimaIndex = 0;
+        for (int i = 0; i < values.length && minimaIndex < minima.size(); i++) {
+            // If we passed a min (descending order)
+            if ( values[i] < minima.get(minimaIndex) ) {
+                // Mark the end of a group with the 1st index of the next group
+                groups.add( i );
+                minimaIndex++;
+            }
+        }
+        groups.add( values.length ); // last group ends at end of list
         return groups;
     }
 
+    /**
+     * Kernel density estimation function
+     *
+     * @param x
+     * @param values
+     * @param mean
+     * @param variance
+     * @return
+     */
     private static double kde(long x, long[] values, double mean, double variance) {
         double total = 0;
         for (int i = 0; i < values.length; i++) {
@@ -68,6 +98,14 @@ public class ClusterUtil {
         return total / (values.length * H);
     }
 
+    /**
+     * Normal Distribution
+     *
+     * @param x
+     * @param mean
+     * @param variance
+     * @return
+     */
     private static double normal(double x, double mean, double variance) {
         double eExpNumerator  = Math.pow(x - mean, 2);
         double eExpDenominator = 2 * variance;
@@ -76,6 +114,42 @@ public class ClusterUtil {
         return numerator / denominator;
     }
 
+    /**
+     * Find index of each min
+     * This represents offsets from the min rank value
+     *
+     * @param probabilities
+     * @return
+     */
+    private static List<Integer> findMinimaOffset(List<Double> probabilities) {
+        List<Integer> minimaOffset = new ArrayList<>();
+
+        if ( probabilities.size() > 2 ) {
+
+            boolean goingUp = probabilities.get(1) - probabilities.get(0) > 0;
+
+            for (int i = 2; i < probabilities.size(); i++) {
+
+                boolean newGoingUp = probabilities.get(i) - probabilities.get(i-1) > 0;
+
+                if ( goingUp==false && newGoingUp==true ) {
+                    minimaOffset.add(i-1); // last index was min
+                    Log.d(TAG, "Min prob="+probabilities.get(i-1) + " offset=" + (i-1));
+                }
+
+                goingUp = newGoingUp;
+
+            }
+
+        }
+
+        return minimaOffset;
+    }
+
+
+    /*
+     * Mean and Variance
+     */
 
     private static double getMean(long[] values) {
         long total = 0;
@@ -93,6 +167,10 @@ public class ClusterUtil {
         return total / values.length;
     }
 
+
+    /*
+     * Min and Max
+     */
 
     private static long getMin(long[] values) {
         long min = Long.MAX_VALUE;
