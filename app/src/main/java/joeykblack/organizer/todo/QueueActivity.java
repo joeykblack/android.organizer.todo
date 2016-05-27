@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -16,11 +15,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,19 +23,13 @@ import joeykblack.organizer.todo.database.TaskContract;
 import joeykblack.organizer.todo.database.TaskDbHelper;
 import joeykblack.organizer.todo.model.Task;
 
-import android.widget.AdapterView;
-
 public class QueueActivity extends AppCompatActivity {
     private static final String TAG = QueueActivity.class.getSimpleName();
 
     private TaskDbHelper mHelper;
     private ListView mTaskListView;
     private ArrayAdapter<Task> mAdapter;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +37,7 @@ public class QueueActivity extends AppCompatActivity {
         final Context myContext = this;
         setContentView(R.layout.activity_queue);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // Edit action
         mTaskListView = (ListView) findViewById(R.id.list_todo);
         mTaskListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -62,12 +50,14 @@ public class QueueActivity extends AppCompatActivity {
             }
         });
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         mHelper = new TaskDbHelper(this);
 
         updateUI();
 
+        // Add action
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,17 +66,18 @@ public class QueueActivity extends AppCompatActivity {
                 myContext.startActivity(gotoTaskDetail);
             }
         });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public void updateUI() {
         ArrayList<Task> taskList = new ArrayList<>();
+
+        // Get Tasks from DB
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor cursor = db.query(TaskContract.TaskEntry.TABLE,
                 new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE, TaskContract.TaskEntry.COL_TASK_PRIORITY, TaskContract.TaskEntry.COL_TASK_DATE},
                 null, null, null, null, null);
+
+        // Create Task list
         while (cursor.moveToNext()) {
             taskList.add(new Task()
                     .setId(Long.parseLong(getValue(cursor, TaskContract.TaskEntry._ID)))
@@ -95,8 +86,11 @@ public class QueueActivity extends AppCompatActivity {
                     .setDate(TaskDbHelper.parseDate(getValue(cursor, TaskContract.TaskEntry.COL_TASK_DATE)))
             );
         }
+
+        // Sort
         Collections.sort(taskList);
 
+        // Update Adapter
         if (mAdapter == null) {
             mAdapter = new ArrayAdapter<Task>(this,
                     R.layout.item_queue,
@@ -110,12 +104,14 @@ public class QueueActivity extends AppCompatActivity {
         }
     }
 
+    // Get value for key from cursor
     private String getValue(Cursor cursor, String key) {
         int idx = cursor.getColumnIndex(key);
         String value = cursor.getString(idx);
         return value;
     }
 
+    // onClick of Done button
     public void deleteTask(View view) {
         View parent = (View) view.getParent();
 
@@ -144,13 +140,18 @@ public class QueueActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        boolean result = false;
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_about) {
+            // TODO: show pupup window
+            result = true;
+        }
+        else {
+            result = super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
+        return result;
     }
 
     public TaskDbHelper getmHelper() {
@@ -160,40 +161,10 @@ public class QueueActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Queue Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://joeykblack.organizer.todo/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Queue Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://joeykblack.organizer.todo/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 }
