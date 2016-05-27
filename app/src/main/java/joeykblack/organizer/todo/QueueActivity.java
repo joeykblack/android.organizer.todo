@@ -1,6 +1,8 @@
 package joeykblack.organizer.todo;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -202,7 +204,20 @@ public class QueueActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            // TODO: show pupup window
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("About");
+            alertDialog.setMessage("This is a TODO list app that sorts tasks by priority and due date."
+                + "\n"
+                + "\nCreated by: joeykblack@gmail.com"
+                + "\nVersion 1.0"
+                + "\nSource: https://github.com/joeykblack/android.organizer.todo");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
             result = true;
         }
         else {
