@@ -206,7 +206,7 @@ public class QueueActivity extends AppCompatActivity {
         if (id == R.id.action_about) {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle("About");
-            alertDialog.setMessage("This is a TODO list app that sorts tasks by priority and due date."
+            alertDialog.setMessage("This is a to do list app that sorts tasks by priority and due date."
                 + "\n"
                 + "\nCreated by: joeykblack@gmail.com"
                 + "\nVersion 1.0"

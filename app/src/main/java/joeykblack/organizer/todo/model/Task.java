@@ -3,6 +3,7 @@ package joeykblack.organizer.todo.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import joeykblack.organizer.todo.database.TaskDbHelper;
 import joeykblack.organizer.todo.util.RankCalculator;
 
 /**
@@ -63,7 +64,7 @@ public class Task implements Comparable<Task>, Serializable {
 
     @Override
     public String toString() {
-        return title;
+        return title + " [" + TaskDbHelper.serializeDate(this.date) + ", " + getPriority() + ", " + getRank() + "]" ;
     }
 
     @Override

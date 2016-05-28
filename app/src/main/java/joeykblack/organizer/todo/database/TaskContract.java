@@ -11,9 +11,9 @@ public class TaskContract {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     public static final String DATE_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
 
-    public static final int PRIORITY_MIN = 0;
-    public static final int PRIORITY_MAX = 100;
-    public static final int PRIORITY_STEP = 5;
+    public static final int PRIORITY_MIN = 1;
+    public static final int PRIORITY_MAX = 10;
+    public static final int PRIORITY_STEP = 1;
 
     public class TaskEntry implements BaseColumns {
         public static final String TABLE = "tasks";

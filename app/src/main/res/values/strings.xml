@@ -1,12 +1,13 @@
 <resources>
-    <string name="app_name">Todo</string>
+    <string name="app_name">Priority List</string>
     <string name="action_about">About</string>
     <string name="title_activity_task_detail">Task Details</string>
 
     <string name="label_task_title">Task</string>
-    <string name="label_task_priority">Priority</string>
-    <string name="pick_date">Select Due Date</string>
+    <string name="label_task_priority">Level of priority:</string>
+    <string name="select_due_date">Select due date:</string>
+    <string name="due_date">Due Date</string>
 
-    <string name="show_all">Show All</string>
-    <string name="show_more">Show More</string>
+    <string name="show_all">Show All Tasks</string>
+    <string name="show_more">Show More Tasks</string>
 </resources>
