@@ -174,7 +174,7 @@ public class QueueActivity extends AppCompatActivity {
 
     // onClick of Show More button
     public void showMore(View view) {
-        showGroupCount++;
+        if (showGroupCount != SHOW_ALL) { showGroupCount++; }
         Log.d(TAG, "showMore: " + showGroupCount);
         updateUI();
     }
