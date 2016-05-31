@@ -23,10 +23,17 @@ public class RankCalculator {
         long daysTillDue = getDaysTillDue(task);
         Log.d(TAG, "\t daysTillDue: " + daysTillDue);
 
+        long scaledDaysTillDue = scaleDaysTillDue(daysTillDue);
+        Log.d(TAG, "\t scaledDaysTillDue: " + daysTillDue);
+
         rank -= daysTillDue;
         Log.d(TAG, "\t final: " + rank);
 
         return rank;
+    }
+
+    private static long scaleDaysTillDue(long daysTillDue) {
+        return daysTillDue + 7;
     }
 
     private static long getDaysTillDue(Task task) {
