@@ -15,6 +15,7 @@ public class ClusterUtil {
     private static final String TAG = ClusterUtil.class.getSimpleName();
 
     private static final double H = 0.1d;
+    private static final double MAX_SPLIT_PROB = 0.1d;
 
     public static List<Task> getGroups(List<Task> tasks, int showGroupCount) {
         long[] ranks = new long[tasks.size()];
@@ -75,7 +76,7 @@ public class ClusterUtil {
         List<Double> probabilities = new ArrayList<>();
         for (long x = max; x >= min; x--) {
             double probability = kde(x, values, mean, variance);
-            Log.d(TAG, "kde( rank:" + x + " ) = " + probability);
+            Log.d(TAG, "\t kde(rank:" + x + "):\t" + probability);
             probabilities.add(probability);
         }
         return probabilities;
@@ -155,9 +156,12 @@ public class ClusterUtil {
 
                 boolean newGoingUp = probabilities.get(i) - probabilities.get(i-1) > 0;
 
-                if ( goingUp==false && newGoingUp==true ) {
+                if ( goingUp==false && newGoingUp==true && MAX_SPLIT_PROB>probabilities.get(i-1) ) {
                     minimaOffset.add(i-1); // last index was min
-                    Log.d(TAG, "Min prob="+probabilities.get(i-1) + " offset=" + (i-1));
+                    Log.d(TAG, "Min prob="+probabilities.get(i-1) + "\t offset=" + (i-1));
+                }
+                else if ( goingUp==false && newGoingUp==true ) {
+                    Log.d(TAG, "\t Not low enough: Min prob="+probabilities.get(i-1) + "\t offset=" + (i-1));
                 }
 
                 goingUp = newGoingUp;
