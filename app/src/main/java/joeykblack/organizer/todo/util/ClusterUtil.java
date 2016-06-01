@@ -15,7 +15,7 @@ public class ClusterUtil {
     private static final String TAG = ClusterUtil.class.getSimpleName();
 
     private static final double H = 0.1d;
-    private static final double MAX_SPLIT_PROB = 0.1d;
+    private static final double MAX_SPLIT_PROB = 0.001d;
 
     public static List<Task> getGroups(List<Task> tasks, int showGroupCount) {
         long[] ranks = new long[tasks.size()];
@@ -54,8 +54,11 @@ public class ClusterUtil {
             long max = getMax(values);
             Log.d(TAG, "max: " + max);
 
+            double bandwidth = H; //1.06 * Math.sqrt(variance) * Math.pow(values.length, -1/5);
+            Log.d(TAG, "bandwidth: " + bandwidth);
+
             // Calculate prob across value range in descending order
-            List<Double> probabilities = getProbabilities(values, mean, variance, min, max);
+            List<Double> probabilities = getProbabilities(values, mean, variance, min, max, bandwidth);
 
             // Find the offset from max of each min
             List<Integer> minimaOffset = findMinimaOffset(probabilities);
@@ -72,10 +75,10 @@ public class ClusterUtil {
 
     @NonNull
     // Calculate prob across value range in descending order
-    private static List<Double> getProbabilities(long[] values, double mean, double variance, long min, long max) {
+    private static List<Double> getProbabilities(long[] values, double mean, double variance, long min, long max, double bandwidth) {
         List<Double> probabilities = new ArrayList<>();
         for (long x = max; x >= min; x--) {
-            double probability = kde(x, values, mean, variance);
+            double probability = kde(x, values, mean, variance, bandwidth);
             Log.d(TAG, "\t kde(rank:" + x + "):\t" + probability);
             probabilities.add(probability);
         }
@@ -113,13 +116,13 @@ public class ClusterUtil {
      * @param variance
      * @return
      */
-    private static double kde(long x, long[] values, double mean, double variance) {
+    private static double kde(long x, long[] values, double mean, double variance, double bandwidth) {
         double total = 0;
         for (int i = 0; i < values.length; i++) {
-            double paramX = ( x - values[i] ) / H;
+            double paramX = ( x - values[i] ) / bandwidth;
             total += normal(paramX, mean, variance);
         }
-        return total / (values.length * H);
+        return total / (values.length * bandwidth);
     }
 
     /**
