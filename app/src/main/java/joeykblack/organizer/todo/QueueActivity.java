@@ -220,7 +220,9 @@ public class QueueActivity extends AppCompatActivity {
             alertDialog.setMessage("This is a to do list app that sorts tasks by priority and due date."
                 + "\n"
                 + "\nCreated by: joeykblack@gmail.com"
+                + "\n"
                 + "\nVersion 1.0"
+                + "\n"
                 + "\nSource: https://github.com/joeykblack/android.organizer.todo");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
