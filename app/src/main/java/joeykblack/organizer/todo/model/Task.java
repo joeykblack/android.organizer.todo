@@ -64,7 +64,10 @@ public class Task implements Comparable<Task>, Serializable {
 
     @Override
     public String toString() {
-        return title + " [" + TaskDbHelper.serializeDate(this.date) + ", " + getPriority() + ", " + getRank() + "]" ;
+        return title;
+    }
+    public String getDetails() {
+        return  TaskDbHelper.serializeDate(this.date) + ", " + getPriority() + ", " + getRank();
     }
 
     @Override
@@ -80,4 +83,6 @@ public class Task implements Comparable<Task>, Serializable {
         }
         return order;
     }
+
+
 }

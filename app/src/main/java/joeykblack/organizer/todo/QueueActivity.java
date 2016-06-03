@@ -15,9 +15,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -134,7 +136,16 @@ public class QueueActivity extends AppCompatActivity {
             mAdapter = new ArrayAdapter<Task>(this,
                     R.layout.item_queue,
                     R.id.task_title,
-                    taskList);
+                    taskList) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    TextView details = (TextView) view.findViewById(R.id.task_details);
+                    Task item = getItem(position);
+                    details.setText(item.getDetails());
+                    return view;
+                }
+            };
             mTaskListView.setAdapter(mAdapter);
         } else {
             mAdapter.clear();
