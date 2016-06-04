@@ -13,15 +13,11 @@
     tools:context="joeykblack.organizer.todo.QueueActivity"
     tools:showIn="@layout/activity_queue">
 
-    <ListView
-        android:id="@+id/list_todo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">"
+        android:layout_height="wrap_content">
         <Button
             android:id="@+id/show_all"
             android:layout_width="0dp"
@@ -37,5 +33,12 @@
             android:text="@string/show_more"
             android:onClick="showMore" />
     </LinearLayout>
+
+
+    <ListView
+        android:id="@+id/list_todo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
 </LinearLayout>
