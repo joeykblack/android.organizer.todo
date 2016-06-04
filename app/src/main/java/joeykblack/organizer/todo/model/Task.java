@@ -67,7 +67,7 @@ public class Task implements Comparable<Task>, Serializable {
         return title;
     }
     public String getDetails() {
-        return  TaskDbHelper.serializeDate(this.date) + ", " + getPriority() + ", " + getRank();
+        return  TaskDbHelper.serializeDateDisplay(this.date);
     }
 
     @Override

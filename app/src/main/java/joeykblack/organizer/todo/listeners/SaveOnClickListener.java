@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 
+import java.util.Date;
+
 import joeykblack.organizer.todo.QueueActivity;
 import joeykblack.organizer.todo.R;
 import joeykblack.organizer.todo.TaskDetailActivity;
@@ -41,7 +43,8 @@ public class SaveOnClickListener implements View.OnClickListener {
         // Get date
         Button editTaskDate = (Button) parent.findViewById(R.id.edit_task_date);
         String dateString = String.valueOf(editTaskDate.getText());
-        dateString = TaskDbHelper.isDate(dateString) ? dateString : null;
+        Date date = TaskDbHelper.parseDate(dateString);
+        dateString = TaskDbHelper.serializeDateDatabase(date);
 
         // Prepare values
         ContentValues values = new ContentValues();

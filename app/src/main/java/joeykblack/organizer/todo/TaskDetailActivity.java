@@ -58,7 +58,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             // Date
             Button editTaskDate = (Button) this.findViewById(R.id.edit_task_date);
             if ( task.getDate() != null ) {
-                editTaskDate.setText( TaskDbHelper.serializeDate( task.getDate() ) );
+                editTaskDate.setText( TaskDbHelper.serializeDateDisplay( task.getDate() ) );
             }
 
             Log.d(TAG, "Loading: " + task.getTitle() + " priority[" + task.getPriority() + "] date[" + task.getDate() + "]");

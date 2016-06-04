@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import joeykblack.organizer.todo.R;
+import joeykblack.organizer.todo.database.TaskDbHelper;
 
 public class DatePickerFragment extends DialogFragment
                             implements DatePickerDialog.OnDateSetListener {
@@ -41,9 +42,13 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        month++; // android months are zero based
+        // Note: android and Calendar months are zero based
         Button datePicker = (Button) getActivity().findViewById(R.id.edit_task_date);
-        datePicker.setText(year+"-"+String.format("%02d", month)+"-"+String.format("%02d", day));
+        Calendar c = new GregorianCalendar();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DAY_OF_MONTH, day);
+        datePicker.setText(TaskDbHelper.serializeDateDisplay(c.getTime()));
     }
 
 }

@@ -37,21 +37,33 @@ public class TaskDbHelper extends SQLiteOpenHelper {
         Date date = null;
         try {
             if ( dateString != null && dateString.trim().equals("")==false ) {
-                date = TaskContract.DATE_FORMAT.parse(dateString);
+                if ( Pattern.matches(TaskContract.DATE_PATTERN, dateString) ) {
+                    date = TaskContract.DATE_FORMAT.parse(dateString);
+                }
+                else if ( Pattern.matches(TaskContract.DATE_PATTERN_DISPLAY, dateString) ) {
+                    date = TaskContract.DATE_FORMAT_DISPLAY.parse(dateString);
+                }
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return date;
     }
-    public static String serializeDate(Date date) {
+    public static String serializeDateDatabase(Date date) {
         String dateString = "";
         if ( date != null ) {
             dateString = TaskContract.DATE_FORMAT.format( date );
         }
         return dateString;
     }
+    public static String serializeDateDisplay(Date date) {
+        String dateString = "";
+        if ( date != null ) {
+            dateString = TaskContract.DATE_FORMAT_DISPLAY.format( date );
+        }
+        return dateString;
+    }
     public static boolean isDate(String dateString) {
-        return Pattern.matches(TaskContract.DATE_PATTERN, dateString);
+        return Pattern.matches(TaskContract.DATE_PATTERN, dateString) || Pattern.matches(TaskContract.DATE_PATTERN_DISPLAY, dateString);
     }
 }
