@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -229,7 +230,7 @@ public class QueueActivity extends AppCompatActivity {
                 + "\n"
                 + "\nCreated by: joeykblack@gmail.com"
                 + "\n"
-                + "\nVersion 1.0"
+                + "\nVersion: " + BuildConfig.VERSION_NAME + " [" + BuildConfig.VERSION_CODE + "]"
                 + "\n"
                 + "\nSource: https://github.com/joeykblack/android.organizer.todo");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
