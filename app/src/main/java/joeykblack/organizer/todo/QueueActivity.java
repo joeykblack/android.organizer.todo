@@ -36,6 +36,7 @@ public class QueueActivity extends AppCompatActivity {
     private TaskDbHelper mHelper;
     private ListView mTaskListView;
     private ArrayAdapter<Task> mAdapter;
+    private List<Task> mTaskList;
 
 
     private static final int SHOW_ALL = -1;
@@ -85,6 +86,8 @@ public class QueueActivity extends AppCompatActivity {
      * Update UI
      */
     public void updateUI() {
+        Log.d(TAG, "updaateUI");
+
         List<Task> taskList = getTasks();
 
         Collections.sort(taskList);
@@ -124,15 +127,14 @@ public class QueueActivity extends AppCompatActivity {
     }
 
     private List<Task> adjustListLength(List<Task> list) {
-        if ( showGroupCount != SHOW_ALL ) {
-            list  = ClusterUtil.getGroups(list, showGroupCount);
-        }
-        return list;
+        return ClusterUtil.getGroups(list, showGroupCount);
     }
 
     private void updateAdapter(List<Task> taskList) {
+        mTaskList = taskList;
         // Update Adapter
         if (mAdapter == null) {
+            Log.d(TAG, "New adapter [" + taskList.size() + "]");
             mAdapter = new ArrayAdapter<Task>(this,
                     R.layout.item_queue,
                     R.id.task_title,
@@ -148,6 +150,7 @@ public class QueueActivity extends AppCompatActivity {
             };
             mTaskListView.setAdapter(mAdapter);
         } else {
+            Log.d(TAG, "Update adapter [" + taskList.size() + "]");
             mAdapter.clear();
             mAdapter.addAll(taskList);
             mAdapter.notifyDataSetChanged();
@@ -168,12 +171,17 @@ public class QueueActivity extends AppCompatActivity {
         int position = adapterView.getPositionForView(parent);
         Task task = (Task) adapterView.getAdapter().getItem(position);
 
+        // Remove task from DB
         SQLiteDatabase db = mHelper.getWritableDatabase();
         db.delete(TaskContract.TaskEntry.TABLE,
                 TaskContract.TaskEntry._ID + " = ?",
                 new String[]{String.valueOf(task.getId())});
         db.close();
-        updateUI();
+
+        // Rebuilding the list can cause tasks to disappear (change groups).
+        // Just remove task from list and update screen.
+        mTaskList.remove(position);
+        mAdapter.notifyDataSetChanged();
     }
 
     // onClick of Show All button

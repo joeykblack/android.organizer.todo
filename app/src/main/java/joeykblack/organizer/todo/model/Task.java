@@ -17,6 +17,7 @@ public class Task implements Comparable<Task>, Serializable {
     private String title;
     private int priority;
     private Date date;
+    private Group group;
 
     private static final long NO_RANK = -1l;
     private long rank = NO_RANK;
@@ -48,6 +49,15 @@ public class Task implements Comparable<Task>, Serializable {
         return this;
     }
 
+    public Group getGroup() {
+        return group;
+    }
+
+    public Task setGroup(Group group) {
+        this.group = group;
+        return this;
+    }
+
     public Date getDate() {
         return date;
     }
@@ -67,7 +77,11 @@ public class Task implements Comparable<Task>, Serializable {
         return title;
     }
     public String getDetails() {
-        return  TaskDbHelper.serializeDateDisplay(this.date);
+        String dateString = "";
+        if ( this.date != null ) {
+            dateString = " - Due: " + TaskDbHelper.serializeDateDisplay(this.date);
+        }
+        return group.getMessage() + dateString;
     }
 
     @Override

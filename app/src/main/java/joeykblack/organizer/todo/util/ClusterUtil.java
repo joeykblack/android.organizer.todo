@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import joeykblack.organizer.todo.model.Group;
 import joeykblack.organizer.todo.model.Task;
 
 /**
@@ -25,11 +26,28 @@ public class ClusterUtil {
         }
 
         List<Integer> groups = getGroupsUsingKDE(ranks);
-        if ( showGroupCount > groups.size() ) {
+        if ( showGroupCount > groups.size() || showGroupCount < 0 ) {
             showGroupCount = groups.size();
         }
 
+        tasks = setGroups(tasks, groups);
+
         return tasks.subList(0, groups.get(showGroupCount-1));
+    }
+
+    private static List<Task> setGroups(List<Task> tasks, List<Integer> groups) {
+        int startIndex = 0;
+        // for each group
+        for (int groupIndex = 0; groupIndex < groups.size(); groupIndex++) {
+            int group = groups.get(groupIndex);
+            // for each task in group range
+            for (int i = startIndex; i < group; i++) {
+                // set group
+                tasks.get(i).setGroup( Group.valueOf(groupIndex) );
+            }
+            startIndex = group;
+        }
+        return tasks;
     }
 
     /**
