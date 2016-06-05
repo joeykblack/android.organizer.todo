@@ -131,14 +131,14 @@ public class QueueActivity extends AppCompatActivity {
     }
 
     private void updateAdapter(List<Task> taskList) {
-        mTaskList = taskList;
         // Update Adapter
         if (mAdapter == null) {
-            Log.d(TAG, "New adapter [" + taskList.size() + "]");
+            mTaskList = taskList;
+            Log.d(TAG, "New adapter [" + mTaskList.size() + "]");
             mAdapter = new ArrayAdapter<Task>(this,
                     R.layout.item_queue,
                     R.id.task_title,
-                    taskList) {
+                    mTaskList) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
@@ -150,9 +150,9 @@ public class QueueActivity extends AppCompatActivity {
             };
             mTaskListView.setAdapter(mAdapter);
         } else {
-            Log.d(TAG, "Update adapter [" + taskList.size() + "]");
-            mAdapter.clear();
-            mAdapter.addAll(taskList);
+            mTaskList.clear();;
+            mTaskList.addAll(taskList);
+            Log.d(TAG, "Update adapter [" + mTaskList.size() + "]");
             mAdapter.notifyDataSetChanged();
         }
     }
