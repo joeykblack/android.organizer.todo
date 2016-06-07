@@ -18,7 +18,7 @@ public class ClusterUtil {
     private static final double H = 0.1d;
     private static final double MAX_SPLIT_PROB = 0.001d;
 
-    public static List<Task> getGroups(List<Task> tasks, int showGroupCount) {
+    public static List<Task> getGroups(List<Task> tasks) {
         long[] ranks = new long[tasks.size()];
         for (int i = 0; i < tasks.size(); i++) {
             ranks[i] = tasks.get(i).getRank();
@@ -26,13 +26,10 @@ public class ClusterUtil {
         }
 
         List<Integer> groups = getGroupsUsingKDE(ranks);
-        if ( showGroupCount > groups.size() || showGroupCount < 0 ) {
-            showGroupCount = groups.size();
-        }
 
         tasks = setGroups(tasks, groups);
 
-        return tasks.subList(0, groups.get(showGroupCount-1));
+        return tasks;
     }
 
     private static List<Task> setGroups(List<Task> tasks, List<Integer> groups) {

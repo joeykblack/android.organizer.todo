@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -38,10 +37,6 @@ public class QueueActivity extends AppCompatActivity {
     private ListView mTaskListView;
     private ArrayAdapter<Task> mAdapter;
     private List<Task> mTaskList;
-
-
-    private static final int SHOW_ALL = -1;
-    private int showGroupCount = 1;
 
 
     @Override
@@ -93,7 +88,7 @@ public class QueueActivity extends AppCompatActivity {
 
         Collections.sort(taskList);
 
-        taskList = adjustListLength(taskList);
+        taskList = ClusterUtil.getGroups(taskList);
 
         updateAdapter(taskList);
     }
@@ -125,10 +120,6 @@ public class QueueActivity extends AppCompatActivity {
         int idx = cursor.getColumnIndex(key);
         String value = cursor.getString(idx);
         return value;
-    }
-
-    private List<Task> adjustListLength(List<Task> list) {
-        return ClusterUtil.getGroups(list, showGroupCount);
     }
 
     private void updateAdapter(List<Task> taskList) {
@@ -179,26 +170,8 @@ public class QueueActivity extends AppCompatActivity {
                 new String[]{String.valueOf(task.getId())});
         db.close();
 
-        // Rebuilding the list can cause tasks to disappear (change groups).
-        // Just remove task from list and update screen.
-        mTaskList.remove(position);
-        mAdapter.notifyDataSetChanged();
-    }
-
-    // onClick of Show All button
-    public void showAll(View view) {
-        showGroupCount = SHOW_ALL;
-        Log.d(TAG, "showAll: " + showGroupCount);
         updateUI();
     }
-
-    // onClick of Show More button
-    public void showMore(View view) {
-        if (showGroupCount != SHOW_ALL) { showGroupCount++; }
-        Log.d(TAG, "showMore: " + showGroupCount);
-        updateUI();
-    }
-
 
 
 

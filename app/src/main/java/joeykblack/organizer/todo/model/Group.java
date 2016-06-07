@@ -6,10 +6,10 @@ package joeykblack.organizer.todo.model;
 public enum Group {
     ONE("Top Priority"),
     TWO("Next up"),
-    THREE("Get to it soon"),
-    FOUR("Get to it eventually"),
+    THREE("Soon"),
+    FOUR("Eventually"),
     FIVE("Meh"),
-    LOW("Low");
+    LOW("Maybe");
 
     private String message;
     Group(String message) {
