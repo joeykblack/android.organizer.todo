@@ -13,6 +13,8 @@ import java.util.GregorianCalendar;
 
 import joeykblack.organizer.todo.R;
 import joeykblack.organizer.todo.database.TaskDbHelper;
+import joeykblack.organizer.todo.util.DateUtil;
+import joeykblack.organizer.todo.util.impl.ContractDateUtil;
 
 public class DatePickerFragment extends DialogFragment
                             implements DatePickerDialog.OnDateSetListener {
@@ -20,6 +22,8 @@ public class DatePickerFragment extends DialogFragment
     private static final String TAG = DatePickerFragment.class.getSimpleName();
 
     private Date date;
+
+    private DateUtil dateUtil = new ContractDateUtil();
 
     public DatePickerFragment setDate(Date date) {
         this.date = date;
@@ -48,7 +52,7 @@ public class DatePickerFragment extends DialogFragment
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, day);
-        datePicker.setText(TaskDbHelper.serializeDateDisplay(c.getTime()));
+        datePicker.setText(dateUtil.serializeDateDisplay(c.getTime()));
     }
 
 }

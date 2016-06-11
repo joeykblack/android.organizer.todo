@@ -28,7 +28,10 @@ import java.util.List;
 import joeykblack.organizer.todo.database.TaskContract;
 import joeykblack.organizer.todo.database.TaskDbHelper;
 import joeykblack.organizer.todo.model.Task;
-import joeykblack.organizer.todo.util.ClusterUtil;
+import joeykblack.organizer.todo.util.ClusterHandler;
+import joeykblack.organizer.todo.util.DateUtil;
+import joeykblack.organizer.todo.util.impl.ContractDateUtil;
+import joeykblack.organizer.todo.util.impl.KDEClusterHandler;
 
 public class QueueActivity extends AppCompatActivity {
     private static final String TAG = QueueActivity.class.getSimpleName();
@@ -37,6 +40,9 @@ public class QueueActivity extends AppCompatActivity {
     private ListView mTaskListView;
     private ArrayAdapter<Task> mAdapter;
     private List<Task> mTaskList;
+
+    private ClusterHandler clusterHandler = new KDEClusterHandler();
+    private DateUtil dateUtil = new ContractDateUtil();
 
 
     @Override
@@ -88,7 +94,7 @@ public class QueueActivity extends AppCompatActivity {
 
         Collections.sort(taskList);
 
-        taskList = ClusterUtil.getGroups(taskList);
+        taskList = clusterHandler.labelTasks(taskList);
 
         updateAdapter(taskList);
     }
@@ -109,7 +115,7 @@ public class QueueActivity extends AppCompatActivity {
                     .setId(Long.parseLong(getValue(cursor, TaskContract.TaskEntry._ID)))
                     .setTitle(getValue(cursor, TaskContract.TaskEntry.COL_TASK_TITLE))
                     .setPriority(Integer.parseInt(getValue(cursor, TaskContract.TaskEntry.COL_TASK_PRIORITY)))
-                    .setDate(TaskDbHelper.parseDate(getValue(cursor, TaskContract.TaskEntry.COL_TASK_DATE)))
+                    .setDate(dateUtil.parseDate(getValue(cursor, TaskContract.TaskEntry.COL_TASK_DATE)))
             );
         }
         return taskList;

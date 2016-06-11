@@ -17,11 +17,14 @@ import joeykblack.organizer.todo.TaskDetailActivity;
 import joeykblack.organizer.todo.database.TaskContract;
 import joeykblack.organizer.todo.database.TaskDbHelper;
 import joeykblack.organizer.todo.model.Task;
+import joeykblack.organizer.todo.util.DateUtil;
+import joeykblack.organizer.todo.util.impl.ContractDateUtil;
 
 public class SaveOnClickListener implements View.OnClickListener {
     private static final String TAG = SaveOnClickListener.class.getSimpleName();
     private final TaskDetailActivity myContext;
     private TaskDbHelper mHelper;
+    private DateUtil dateUtil = new ContractDateUtil();
 
     public SaveOnClickListener(TaskDetailActivity myContext) {
         this.myContext = myContext;
@@ -43,8 +46,8 @@ public class SaveOnClickListener implements View.OnClickListener {
         // Get date
         Button editTaskDate = (Button) parent.findViewById(R.id.edit_task_date);
         String dateString = String.valueOf(editTaskDate.getText());
-        Date date = TaskDbHelper.parseDate(dateString);
-        dateString = TaskDbHelper.serializeDateDatabase(date);
+        Date date = dateUtil.parseDate(dateString);
+        dateString = dateUtil.serializeDateDatabase(date);
 
         // Prepare values
         ContentValues values = new ContentValues();

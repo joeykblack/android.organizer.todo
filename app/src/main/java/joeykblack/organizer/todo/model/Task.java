@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 import joeykblack.organizer.todo.database.TaskDbHelper;
+import joeykblack.organizer.todo.util.DateUtil;
 import joeykblack.organizer.todo.util.RankCalculator;
+import joeykblack.organizer.todo.util.impl.ContractDateUtil;
+import joeykblack.organizer.todo.util.impl.PriorityAndDateRankCalculator;
 
 /**
  * Created by joey on 5/21/2016.
@@ -18,6 +21,8 @@ public class Task implements Comparable<Task>, Serializable {
     private int priority;
     private Date date;
     private Group group;
+    private RankCalculator rankCalculator = new PriorityAndDateRankCalculator();
+    private DateUtil dateUtil = new ContractDateUtil();
 
     private static final long NO_RANK = -1l;
     private long rank = NO_RANK;
@@ -68,7 +73,7 @@ public class Task implements Comparable<Task>, Serializable {
     }
 
     public long getRank() {
-        rank = rank != NO_RANK ? rank : RankCalculator.getRank(this);
+        rank = rank != NO_RANK ? rank : rankCalculator.getRank(this);
         return rank;
     }
 
@@ -79,7 +84,7 @@ public class Task implements Comparable<Task>, Serializable {
     public String getDetails() {
         String dateString = "";
         if ( this.date != null ) {
-            dateString = " - Due: " + TaskDbHelper.serializeDateDisplay(this.date);
+            dateString = " - Due: " + dateUtil.serializeDateDisplay(this.date);
         }
         return group.getMessage() + dateString;
     }

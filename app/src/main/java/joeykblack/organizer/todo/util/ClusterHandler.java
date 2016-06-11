@@ -1,12 +1,14 @@
 package joeykblack.organizer.todo.util;
 
+import java.util.List;
+
 import joeykblack.organizer.todo.model.Task;
 
 /**
  * Created by joey on 6/11/2016.
  */
-public interface RankCalculator {
+public interface ClusterHandler {
 
-    public long getRank(Task task);
+    public List<Task> labelTasks(List<Task> tasks);
 
 }

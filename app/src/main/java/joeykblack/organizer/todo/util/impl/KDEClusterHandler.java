@@ -1,4 +1,4 @@
-package joeykblack.organizer.todo.util;
+package joeykblack.organizer.todo.util.impl;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -8,17 +8,19 @@ import java.util.List;
 
 import joeykblack.organizer.todo.model.Group;
 import joeykblack.organizer.todo.model.Task;
+import joeykblack.organizer.todo.util.ClusterHandler;
 
 /**
  * Created by joey on 5/27/2016.
  */
-public class ClusterUtil {
-    private static final String TAG = ClusterUtil.class.getSimpleName();
+public class KDEClusterHandler implements ClusterHandler {
+    private static final String TAG = KDEClusterHandler.class.getSimpleName();
 
     private static final double H = 0.1d;
     private static final double MAX_SPLIT_PROB = 0.001d;
 
-    public static List<Task> getGroups(List<Task> tasks) {
+    @Override
+    public List<Task> labelTasks(List<Task> tasks) {
         long[] ranks = new long[tasks.size()];
         for (int i = 0; i < tasks.size(); i++) {
             ranks[i] = tasks.get(i).getRank();
@@ -32,7 +34,8 @@ public class ClusterUtil {
         return tasks;
     }
 
-    private static List<Task> setGroups(List<Task> tasks, List<Integer> groups) {
+
+    private List<Task> setGroups(List<Task> tasks, List<Integer> groups) {
         int startIndex = 0;
         // for each group
         for (int groupIndex = 0; groupIndex < groups.size(); groupIndex++) {
@@ -53,7 +56,7 @@ public class ClusterUtil {
      * @return groups[groupNumber] = start of group groupNumber + 1
      *  group i = values.subList( groups[i-1], groups[i] )
      */
-    private static List<Integer> getGroupsUsingKDE(long[] values) {
+    private List<Integer> getGroupsUsingKDE(long[] values) {
         List<Integer> groups = new ArrayList<>();
 
         if ( values.length > 0 ) {
@@ -90,7 +93,7 @@ public class ClusterUtil {
 
     @NonNull
     // Calculate prob across value range in descending order
-    private static List<Double> getProbabilities(long[] values, double mean, double variance, long min, long max, double bandwidth) {
+    private List<Double> getProbabilities(long[] values, double mean, double variance, long min, long max, double bandwidth) {
         List<Double> probabilities = new ArrayList<>();
         for (long x = max; x >= min; x--) {
             double probability = kde(x, values, mean, variance, bandwidth);
@@ -102,7 +105,7 @@ public class ClusterUtil {
 
     @NonNull
     // Calculate minima
-    private static List<Long> getMinima(long max, List<Integer> minimaOffset) {
+    private List<Long> getMinima(long max, List<Integer> minimaOffset) {
         List<Long> minima = new ArrayList<>();
         for (Integer offset : minimaOffset) {
             minima.add(max - offset); // max - offset from max
@@ -110,7 +113,7 @@ public class ClusterUtil {
         return minima;
     }
 
-    private static void addGroups(long[] values, List<Integer> groups, List<Long> minima) {
+    private void addGroups(long[] values, List<Integer> groups, List<Long> minima) {
         int minimaIndex = 0;
         for (int i = 0; i < values.length && minimaIndex < minima.size(); i++) {
             // If we passed a min (descending order)
@@ -131,7 +134,7 @@ public class ClusterUtil {
      * @param variance
      * @return
      */
-    private static double kde(long x, long[] values, double mean, double variance, double bandwidth) {
+    private double kde(long x, long[] values, double mean, double variance, double bandwidth) {
         double total = 0;
         for (int i = 0; i < values.length; i++) {
             double paramX = ( x - values[i] ) / bandwidth;
@@ -148,7 +151,7 @@ public class ClusterUtil {
      * @param variance
      * @return
      */
-    private static double normal(double x, double mean, double variance) {
+    private double normal(double x, double mean, double variance) {
         double eExpNumerator  = Math.pow(x - mean, 2);
         double eExpDenominator = 2 * variance;
         double numerator = Math.pow(Math.E, (-1 * eExpNumerator) / eExpDenominator);
@@ -163,7 +166,7 @@ public class ClusterUtil {
      * @param probabilities
      * @return
      */
-    private static List<Integer> findMinimaOffset(List<Double> probabilities) {
+    private List<Integer> findMinimaOffset(List<Double> probabilities) {
         List<Integer> minimaOffset = new ArrayList<>();
 
         if ( probabilities.size() > 2 ) {
@@ -196,7 +199,7 @@ public class ClusterUtil {
      * Mean and Variance
      */
 
-    private static double getMean(long[] values) {
+    private double getMean(long[] values) {
         long total = 0;
         for (int i = 0; i < values.length; i++) {
             total += values[i];
@@ -204,7 +207,7 @@ public class ClusterUtil {
         return total / values.length;
     }
 
-    private static double getVariance(long[] values, double mean) {
+    private double getVariance(long[] values, double mean) {
         double total = 0;
         for (int i = 0; i < values.length; i++) {
             total += Math.pow( ( values[i] - mean ) , 2 );
@@ -217,19 +220,18 @@ public class ClusterUtil {
      * Min and Max
      */
 
-    private static long getMin(long[] values) {
+    private long getMin(long[] values) {
         long min = Long.MAX_VALUE;
         for (int i = 0; i < values.length; i++) {
             min = Math.min(min, values[i]);
         }
         return min;
     }
-    private static long getMax(long[] values) {
+    private long getMax(long[] values) {
         long max = Long.MIN_VALUE;
         for (int i = 0; i < values.length; i++) {
             max = Math.max(max, values[i]);
         }
         return max;
     }
-
 }

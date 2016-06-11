@@ -16,12 +16,15 @@ import joeykblack.organizer.todo.database.TaskDbHelper;
 import joeykblack.organizer.todo.fragment.DatePickerFragment;
 import joeykblack.organizer.todo.listeners.SaveOnClickListener;
 import joeykblack.organizer.todo.model.Task;
+import joeykblack.organizer.todo.util.DateUtil;
+import joeykblack.organizer.todo.util.impl.ContractDateUtil;
 
 public class TaskDetailActivity extends AppCompatActivity {
     private static final String TAG = "TaskDetailActivity";
 
     private TaskDbHelper mHelper;
     private Task task;
+    private DateUtil dateUtil = new ContractDateUtil();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             // Date
             Button editTaskDate = (Button) this.findViewById(R.id.edit_task_date);
             if ( task.getDate() != null ) {
-                editTaskDate.setText( TaskDbHelper.serializeDateDisplay( task.getDate() ) );
+                editTaskDate.setText( dateUtil.serializeDateDisplay( task.getDate() ) );
             }
 
             Log.d(TAG, "Loading: " + task.getTitle() + " priority[" + task.getPriority() + "] date[" + task.getDate() + "]");
