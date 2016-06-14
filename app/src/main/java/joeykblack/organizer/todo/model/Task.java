@@ -77,6 +77,11 @@ public class Task implements Comparable<Task>, Serializable {
         return rank;
     }
 
+    public Task setRank(long rank) {
+        this.rank = rank;
+        return this;
+    }
+
     @Override
     public String toString() {
         return title;
