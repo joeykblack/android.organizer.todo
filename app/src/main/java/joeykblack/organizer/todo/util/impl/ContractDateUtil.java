@@ -1,5 +1,6 @@
 package joeykblack.organizer.todo.util.impl;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -10,7 +11,7 @@ import joeykblack.organizer.todo.util.DateUtil;
 /**
  * Created by joey on 6/11/2016.
  */
-public class ContractDateUtil implements DateUtil {
+public class ContractDateUtil implements DateUtil, Serializable {
 
     @Override
     public Date parseDate(String dateString) {

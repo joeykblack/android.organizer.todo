@@ -205,13 +205,13 @@ public class QueueActivity extends AppCompatActivity {
         if (id == R.id.action_about) {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
             alertDialog.setTitle("About");
-            alertDialog.setMessage("This is a to do list app that sorts tasks by priority and due date."
+            alertDialog.setMessage("This is a simple to do list app that sorts tasks by priority and due date."
                 + "\n"
                 + "\nCreated by: joeykblack@gmail.com"
                 + "\n"
                 + "\nVersion: " + BuildConfig.VERSION_NAME + " [" + BuildConfig.VERSION_CODE + "]"
                 + "\n"
-                + "\nSource: https://github.com/joeykblack/android.organizer.todo");
+                + "\nSite: joeykblack.github.com");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {

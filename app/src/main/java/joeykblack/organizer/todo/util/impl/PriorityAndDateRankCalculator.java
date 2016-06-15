@@ -3,6 +3,7 @@ package joeykblack.organizer.todo.util.impl;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +13,7 @@ import joeykblack.organizer.todo.util.RankCalculator;
 /**
  * Created by joey on 5/22/2016.
  */
-public class PriorityAndDateRankCalculator implements RankCalculator {
+public class PriorityAndDateRankCalculator implements RankCalculator, Serializable {
     private static final String TAG = PriorityAndDateRankCalculator.class.getSimpleName();
 
     @Override
