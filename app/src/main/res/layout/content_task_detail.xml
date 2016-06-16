@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/label_task_title"
                 android:ems="10"
-                android:inputType="text" />
+                android:inputType="textCapSentences" />
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
@@ -43,18 +43,53 @@
                 <NumberPicker android:id="@+id/edit_task_priority"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"  />
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:layout_marginTop="30sp"
+                        android:layout_marginLeft="10sp"
+                        android:textSize="20sp"
+                        android:text="@string/label_task_priority_low"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginBottom="30sp"
+                        android:layout_marginLeft="10sp"
+                        android:textSize="20sp"
+                        android:text="@string/label_task_priority_high"/>
+                </LinearLayout>
             </LinearLayout>
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
-                <TextView
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="20sp"
-                    android:layout_marginRight="15sp"
-                    android:text="@string/select_due_date"/>
+                    android:layout_gravity="fill"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="15sp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="20sp"
+                        android:text="@string/select_due_date"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="20sp"
+                        android:text="@string/optional"/>
+                </LinearLayout>
                 <Button
                     android:id="@+id/edit_task_date"
                     android:layout_width="fill_parent"
